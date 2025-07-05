@@ -1,0 +1,40 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Docker files (except Dockerfile)
+# Note: we actually want docker-compose.yml and .dockerignore excluded
+# but keep scripts/ directory 

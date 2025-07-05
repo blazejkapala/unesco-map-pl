@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Zabytków UNESCO w Polsce</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin="">
+    
+    <!-- Custom CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 120px);
+            margin: 0;
+            gap: 0;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            background: #34495e;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .counter {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .loading {
+            padding: 2rem;
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .heritage-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #ecf0f1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            overflow: hidden;
+            min-height: 120px;
+        }
+
+        .heritage-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .heritage-item.active {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .heritage-name {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .heritage-details {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .heritage-details .detail-row {
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .year-badge {
+            background: #3498db;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+            background: #ecf0f1;
+        }
+
+        .leaflet-popup-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            max-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            max-height: 450px;
+        }
+
+        .popup-title {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .popup-details {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .popup-year {
+            background: #e74c3c;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 40vh;
+                order: 2;
+            }
+            
+            #map {
+                height: 60vh;
+                order: 1;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏛️ Zabytki UNESCO w Polsce</h1>
+        <p>Interaktywna mapa obiektów wpisanych na Listę Światowego Dziedzictwa UNESCO</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Lista Zabytków</h2>
+                <div class="counter" id="counter">Ładowanie...</div>
+            </div>
+            <div id="heritage-list" class="loading">
+                Pobieranie danych z API...
+            </div>
+        </div>
+        
+        <div id="map"></div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+            crossorigin=""></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        class UNESCOMap {
+            constructor() {
+                this.map = null;
+                this.markers = [];
+                this.heritageData = [];
+                this.activeMarker = null;
+                this.initMap();
+                this.loadData();
+            }
+
+            initMap() {
+                // Initialize map centered on Poland
+                this.map = L.map('map').setView([51.9194, 19.1451], 6);
+
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 18
+                }).addTo(this.map);
+            }
+
+            async loadData() {
+                try {
+                    console.log('Pobieranie danych z API...');
+                    const response = await fetch('/api/unesco');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Dane pobrane:', data);
+                    
+                    if (data.data && Array.isArray(data.data)) {
+                        this.heritageData = data.data;
+                        this.renderHeritageList();
+                        this.addMarkersToMap();
+                        this.updateCounter();
+                    } else {
+                        throw new Error('Nieprawidłowa struktura danych');
+                    }
+                } catch (error) {
+                    console.error('Błąd podczas pobierania danych:', error);
+                    this.showError(`Błąd podczas pobierania danych: ${error.message}`);
+                }
+            }
+
+            renderHeritageList() {
+                const listContainer = document.getElementById('heritage-list');
+                
+                if (this.heritageData.length === 0) {
+                    listContainer.innerHTML = '<div class="loading">Brak danych do wyświetlenia</div>';
+                    return;
+                }
+
+                listContainer.innerHTML = this.heritageData.map((item, index) => `
+                    <div class="heritage-item" data-index="${index}" onclick="app.selectHeritage(${index})">
+                        <div class="heritage-name">${item.nazwa}</div>
+                        <div class="heritage-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Lokalizacja:</span> 
+                                ${item.miejscowosc}${item.ulica ? `, ${item.ulica}` : ''}${item.nrAdresowy ? ` ${item.nrAdresowy}` : ''}
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Województwo:</span> ${item.wojewodztwo}
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Numer wpisu:</span> ${item.numerWpisu}
+                            </div>
+                            <div class="year-badge">Wpis: ${item.dataWpisu}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            addMarkersToMap() {
+                // Clear existing markers
+                this.markers.forEach(marker => this.map.removeLayer(marker));
+                this.markers = [];
+
+                this.heritageData.forEach((item, index) => {
+                    if (item.e && item.n) {
+                        const lat = parseFloat(item.n);
+                        const lng = parseFloat(item.e);
+
+                        if (!isNaN(lat) && !isNaN(lng)) {
+                            const marker = L.marker([lat, lng])
+                                .bindPopup(`
+                                    <div class="popup-title">${item.nazwa}</div>
+                                    <div class="popup-details">
+                                        <strong>Lokalizacja:</strong> ${item.miejscowosc}<br>
+                                        <strong>Województwo:</strong> ${item.wojewodztwo}<br>
+                                        <strong>Numer wpisu:</strong> ${item.numerWpisu}<br>
+                                        ${item.ulica ? `<strong>Adres:</strong> ${item.ulica}${item.nrAdresowy ? ` ${item.nrAdresowy}` : ''}<br>` : ''}
+                                        <div class="popup-year">Wpisany: ${item.dataWpisu}</div>
+                                    </div>
+                                `)
+                                .on('click', () => this.selectHeritage(index))
+                                .addTo(this.map);
+
+                            this.markers.push(marker);
+                        }
+                    }
+                });
+
+                // Fit map to show all markers
+                if (this.markers.length > 0) {
+                    const group = new L.featureGroup(this.markers);
+                    this.map.fitBounds(group.getBounds().pad(0.1));
+                }
+            }
+
+            selectHeritage(index) {
+                // Remove active class from all items
+                document.querySelectorAll('.heritage-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Add active class to selected item
+                const selectedItem = document.querySelector(`[data-index="${index}"]`);
+                if (selectedItem) {
+                    selectedItem.classList.add('active');
+                    selectedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                // Focus on marker
+                const marker = this.markers[index];
+                if (marker) {
+                    this.map.setView(marker.getLatLng(), 12);
+                    marker.openPopup();
+                    
+                    // Highlight marker temporarily
+                    if (this.activeMarker) {
+                        this.activeMarker.setIcon(new L.Icon.Default());
+                    }
+                    
+                    const highlightIcon = new L.Icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    
+                    marker.setIcon(highlightIcon);
+                    this.activeMarker = marker;
+                }
+            }
+
+
+
+            updateCounter() {
+                const counter = document.getElementById('counter');
+                counter.textContent = `${this.heritageData.length} obiektów`;
+            }
+
+            showError(message) {
+                const listContainer = document.getElementById('heritage-list');
+                listContainer.innerHTML = `<div class="error-message">${message}</div>`;
+                
+                const counter = document.getElementById('counter');
+                counter.textContent = 'Błąd';
+            }
+        }
+
+        // Initialize the application
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new UNESCOMap();
+        });
+    </script>
+</body>
+</html> 
