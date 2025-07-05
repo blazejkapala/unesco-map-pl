@@ -186,6 +186,44 @@
             display: inline-block;
         }
 
+        .navigate-btn {
+            background: #27ae60;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .navigate-btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .navigate-btn:active {
+            transform: translateY(0);
+        }
+
+        .navigate-btn-small {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        .heritage-actions {
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .error-message {
             background: #e74c3c;
             color: white;
@@ -293,6 +331,10 @@
                 }
             }
 
+            generateGoogleMapsLink(lat, lng) {
+                return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+            }
+
             renderHeritageList() {
                 const listContainer = document.getElementById('heritage-list');
                 
@@ -301,24 +343,33 @@
                     return;
                 }
 
-                listContainer.innerHTML = this.heritageData.map((item, index) => `
-                    <div class="heritage-item" data-index="${index}" onclick="app.selectHeritage(${index})">
-                        <div class="heritage-name">${item.nazwa}</div>
-                        <div class="heritage-details">
-                            <div class="detail-row">
-                                <span class="detail-label">Lokalizacja:</span> 
-                                ${item.miejscowosc}${item.ulica ? `, ${item.ulica}` : ''}${item.nrAdresowy ? ` ${item.nrAdresowy}` : ''}
+                listContainer.innerHTML = this.heritageData.map((item, index) => {
+                    const lat = parseFloat(item.n);
+                    const lng = parseFloat(item.e);
+                    const hasCoords = !isNaN(lat) && !isNaN(lng);
+
+                    return `
+                        <div class="heritage-item" data-index="${index}" onclick="app.selectHeritage(${index})">
+                            <div class="heritage-name">${item.nazwa}</div>
+                            <div class="heritage-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Lokalizacja:</span> 
+                                    ${item.miejscowosc}${item.ulica ? `, ${item.ulica}` : ''}${item.nrAdresowy ? ` ${item.nrAdresowy}` : ''}
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Województwo:</span> ${item.wojewodztwo}
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Numer wpisu:</span> ${item.numerWpisu}
+                                </div>
+                                <div class="heritage-actions">
+                                    <div class="year-badge">Wpis: ${item.dataWpisu}</div>
+                                    ${hasCoords ? `<a href="${this.generateGoogleMapsLink(lat, lng)}" target="_blank" class="navigate-btn navigate-btn-small" onclick="event.stopPropagation()">📍 Nawiguj</a>` : ''}
+                                </div>
                             </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Województwo:</span> ${item.wojewodztwo}
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Numer wpisu:</span> ${item.numerWpisu}
-                            </div>
-                            <div class="year-badge">Wpis: ${item.dataWpisu}</div>
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             addMarkersToMap() {
@@ -341,6 +392,7 @@
                                         <strong>Numer wpisu:</strong> ${item.numerWpisu}<br>
                                         ${item.ulica ? `<strong>Adres:</strong> ${item.ulica}${item.nrAdresowy ? ` ${item.nrAdresowy}` : ''}<br>` : ''}
                                         <div class="popup-year">Wpisany: ${item.dataWpisu}</div>
+                                        <a href="${this.generateGoogleMapsLink(lat, lng)}" target="_blank" class="navigate-btn">📍 Nawiguj w Google Maps</a>
                                     </div>
                                 `)
                                 .on('click', () => this.selectHeritage(index))
@@ -395,8 +447,6 @@
                     this.activeMarker = marker;
                 }
             }
-
-
 
             updateCounter() {
                 const counter = document.getElementById('counter');
