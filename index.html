@@ -48,7 +48,7 @@
 
         .container {
             display: flex;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 180px);
             margin: 0;
             gap: 0;
         }
@@ -233,6 +233,37 @@
             text-align: center;
         }
 
+        .footer {
+            background: rgba(52, 73, 94, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .container {
@@ -275,6 +306,17 @@
         </div>
         
         <div id="map"></div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                Stworzone z ❤️ przez <strong>Błażej Kapała</strong> • 
+                <a href="https://github.com/blazejkapala" target="_blank">GitHub</a> • 
+                <a href="https://www.linkedin.com/in/blazejkapala/" target="_blank">LinkedIn</a> • 
+                <a href="https://bananowe.it" target="_blank">bananowe.it</a>
+            </div>
+        </div>
     </div>
 
     <!-- Leaflet JS -->

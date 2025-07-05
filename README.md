@@ -204,6 +204,13 @@ The application processes data from the Polish National Heritage Institute API, 
 4. Test with Docker
 5. Submit a pull request
 
+## 👨‍💻 Author
+
+**Błażej Kapała**
+- GitHub: [https://github.com/blazejkapala](https://github.com/blazejkapala)
+- LinkedIn: [https://www.linkedin.com/in/blazejkapala/](https://www.linkedin.com/in/blazejkapala/)
+- Website: [bananowe.it](https://bananowe.it)
+
 ## 📄 License
 
 This project is open source and available under the MIT License.
