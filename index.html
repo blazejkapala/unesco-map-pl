@@ -69,6 +69,33 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header-content {
+            flex: 1;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-toggle:active {
+            transform: scale(0.95);
         }
 
         .sidebar-header h2 {
@@ -162,6 +189,31 @@
         
         .leaflet-popup-content-wrapper {
             max-height: 450px;
+        }
+
+        .mobile-popup .leaflet-popup-content {
+            max-width: 250px;
+            max-height: 300px;
+            font-size: 0.9rem;
+        }
+
+        .mobile-popup .leaflet-popup-content-wrapper {
+            max-height: 350px;
+        }
+
+        .mobile-popup .popup-title {
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .mobile-popup .popup-details {
+            font-size: 0.85rem;
+        }
+
+        .mobile-popup .navigate-btn {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            margin-top: 0.4rem;
         }
 
         .popup-title {
@@ -265,6 +317,280 @@
         }
 
         /* Responsive design */
+        @media (max-width: 480px) {
+            /* Mobile phones */
+            .header {
+                padding: 0.8rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .header p {
+                font-size: 0.9rem;
+            }
+            
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 35vh;
+                order: 2;
+                border-right: none;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                transition: max-height 0.3s ease;
+            }
+
+            .sidebar.collapsed {
+                max-height: 60px;
+                overflow: hidden;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .sidebar-header {
+                padding: 1rem;
+            }
+            
+            .sidebar-header h2 {
+                font-size: 1.1rem;
+            }
+            
+            #map {
+                height: 65vh;
+                order: 1;
+            }
+            
+            .heritage-item {
+                padding: 1rem;
+                min-height: 100px;
+                /* Larger touch targets */
+                min-height: 44px;
+            }
+            
+            .heritage-name {
+                font-size: 1rem;
+            }
+            
+            .heritage-details {
+                font-size: 0.85rem;
+            }
+            
+            .navigate-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                min-height: 44px; /* Touch-friendly */
+            }
+            
+            .navigate-btn-small {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+                min-height: 36px;
+            }
+            
+            .footer {
+                padding: 1rem 0;
+            }
+            
+            .footer-content {
+                padding: 0 1rem;
+            }
+            
+            .footer-text {
+                font-size: 0.8rem;
+            }
+            
+            /* Better popup for mobile */
+            .leaflet-popup-content {
+                max-width: 250px;
+                font-size: 0.9rem;
+            }
+            
+            .popup-title {
+                font-size: 1rem;
+            }
+            
+            .popup-details {
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (min-width: 481px) and (max-width: 768px) {
+            /* Tablets and large phones */
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 45vh;
+                order: 2;
+                border-right: none;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                transition: max-height 0.3s ease;
+            }
+
+            .sidebar.collapsed {
+                max-height: 60px;
+                overflow: hidden;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            #map {
+                height: 55vh;
+                order: 1;
+            }
+            
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .heritage-item {
+                padding: 1.2rem;
+                min-height: 110px;
+            }
+            
+            .navigate-btn {
+                padding: 0.5rem 1rem;
+                min-height: 44px;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            /* Small desktop/large tablets */
+            .sidebar {
+                width: 300px;
+            }
+            
+            .header {
+                padding: 1rem 1.5rem;
+            }
+            
+            .container {
+                height: calc(100vh - 160px);
+            }
+        }
+        
+        @media (min-width: 1025px) {
+            /* Large desktop */
+            .sidebar {
+                width: 400px;
+            }
+            
+            .container {
+                height: calc(100vh - 180px);
+            }
+        }
+        
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            /* Touch devices */
+            .heritage-item {
+                min-height: 44px;
+                padding: 1rem;
+            }
+            
+            .heritage-item:hover {
+                background: white; /* Remove hover effect on touch */
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .heritage-item:active {
+                background: #f0f0f0;
+                transform: scale(0.98);
+            }
+            
+            .navigate-btn {
+                min-height: 44px;
+                padding: 0.6rem 1rem;
+            }
+            
+            .navigate-btn:hover {
+                background: #27ae60; /* Remove hover effect */
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .navigate-btn:active {
+                background: #219a52;
+                transform: scale(0.95);
+            }
+        }
+        
+        /* Landscape orientation fixes */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .container {
+                flex-direction: row;
+                height: calc(100vh - 120px);
+            }
+            
+            .sidebar {
+                width: 35%;
+                max-height: none;
+                height: 100%;
+                order: 1;
+                border-right: 1px solid rgba(0, 0, 0, 0.1);
+                border-top: none;
+            }
+            
+            #map {
+                height: 100%;
+                order: 2;
+            }
+            
+            .header {
+                padding: 0.5rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.2rem;
+            }
+            
+            .header p {
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+            .heritage-item {
+                border-width: 0.5px;
+            }
+            
+            .sidebar {
+                border-right-width: 0.5px;
+            }
+        }
+        
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            .heritage-item {
+                transition: none;
+            }
+            
+            .navigate-btn {
+                transition: none;
+            }
+        }
+        
+        /* Old responsive rule - keep for backwards compatibility */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -297,8 +623,13 @@
     <div class="container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Lista Zabytków</h2>
-                <div class="counter" id="counter">Ładowanie...</div>
+                <div class="sidebar-header-content">
+                    <h2>Lista Zabytków</h2>
+                    <div class="counter" id="counter">Ładowanie...</div>
+                </div>
+                <button class="sidebar-toggle" id="sidebar-toggle" onclick="app.toggleSidebar()">
+                    ▼
+                </button>
             </div>
             <div id="heritage-list" class="loading">
                 Pobieranie danych z API...
@@ -337,14 +668,30 @@
             }
 
             initMap() {
-                // Initialize map centered on Poland
-                this.map = L.map('map').setView([51.9194, 19.1451], 6);
+                // Initialize map centered on Poland with mobile-friendly options
+                this.map = L.map('map', {
+                    center: [51.9194, 19.1451],
+                    zoom: 6,
+                    zoomControl: false, // We'll add it back with better positioning
+                    tap: true,
+                    touchZoom: true,
+                    dragging: true,
+                    scrollWheelZoom: true
+                });
+
+                // Add zoom control in better position for mobile
+                L.control.zoom({
+                    position: 'bottomright'
+                }).addTo(this.map);
 
                 // Add OpenStreetMap tiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                     maxZoom: 18
                 }).addTo(this.map);
+
+                // Disable map dragging when scrolling through sidebar on mobile
+                this.setupMobileMapInteractions();
             }
 
             async loadData() {
@@ -425,6 +772,14 @@
                         const lng = parseFloat(item.e);
 
                         if (!isNaN(lat) && !isNaN(lng)) {
+                            const popupOptions = {
+                                maxWidth: this.isMobile() ? 250 : 300,
+                                className: this.isMobile() ? 'mobile-popup' : 'desktop-popup',
+                                closeButton: true,
+                                autoPan: true,
+                                autoPanPadding: [10, 10]
+                            };
+
                             const marker = L.marker([lat, lng])
                                 .bindPopup(`
                                     <div class="popup-title">${item.nazwa}</div>
@@ -436,7 +791,7 @@
                                         <div class="popup-year">Wpisany: ${item.dataWpisu}</div>
                                         <a href="${this.generateGoogleMapsLink(lat, lng)}" target="_blank" class="navigate-btn">📍 Nawiguj w Google Maps</a>
                                     </div>
-                                `)
+                                `, popupOptions)
                                 .on('click', () => this.selectHeritage(index))
                                 .addTo(this.map);
 
@@ -501,6 +856,73 @@
                 
                 const counter = document.getElementById('counter');
                 counter.textContent = 'Błąd';
+            }
+
+            setupMobileMapInteractions() {
+                // Handle mobile-specific map interactions
+                const sidebar = document.querySelector('.sidebar');
+                
+                // Prevent map interaction when scrolling through sidebar on mobile
+                if (sidebar) {
+                    sidebar.addEventListener('touchstart', (e) => {
+                        this.map.dragging.disable();
+                        this.map.touchZoom.disable();
+                        this.map.doubleClickZoom.disable();
+                        this.map.scrollWheelZoom.disable();
+                    });
+                    
+                    sidebar.addEventListener('touchend', (e) => {
+                        setTimeout(() => {
+                            this.map.dragging.enable();
+                            this.map.touchZoom.enable();
+                            this.map.doubleClickZoom.enable();
+                            this.map.scrollWheelZoom.enable();
+                        }, 100);
+                    });
+                }
+
+                // Handle orientation changes
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        this.map.invalidateSize();
+                        // Refit bounds after orientation change
+                        if (this.markers.length > 0) {
+                            const group = new L.featureGroup(this.markers);
+                            this.map.fitBounds(group.getBounds().pad(0.1));
+                        }
+                    }, 200);
+                });
+
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    setTimeout(() => {
+                        this.map.invalidateSize();
+                    }, 100);
+                });
+            }
+
+            isMobile() {
+                return window.innerWidth <= 768;
+            }
+
+            toggleSidebar() {
+                const sidebar = document.querySelector('.sidebar');
+                const toggleButton = document.getElementById('sidebar-toggle');
+                
+                if (sidebar.classList.contains('collapsed')) {
+                    sidebar.classList.remove('collapsed');
+                    toggleButton.textContent = '▼';
+                    toggleButton.setAttribute('aria-label', 'Zwiń listę');
+                } else {
+                    sidebar.classList.add('collapsed');
+                    toggleButton.textContent = '▲';
+                    toggleButton.setAttribute('aria-label', 'Rozwiń listę');
+                }
+
+                // Resize map after sidebar toggle
+                setTimeout(() => {
+                    this.map.invalidateSize();
+                }, 300);
             }
         }
 

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: unesco-backend
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=Europe/Warsaw
+    volumes:
+      - unesco_data:/app/data
+      - unesco_logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8033/api/unesco')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - unesco-network
+
+  frontend:
+    build: ./unesco-map-react
+    container_name: unesco-frontend
+    restart: unless-stopped
+    ports:
+      - "8033:80"
+    depends_on:
+      - backend
+    networks:
+      - unesco-network
+
+networks:
+  unesco-network:
+    driver: bridge
+
+volumes:
+  unesco_data:
+    driver: local
+  unesco_logs:
+    driver: local 
