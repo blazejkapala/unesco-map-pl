@@ -1,6 +1,7 @@
 import { HeritageSite } from '../types/heritage';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8033';
+// Use relative URL for API calls - nginx will handle the routing
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 export const fetchHeritageData = async (): Promise<HeritageSite[]> => {
   try {

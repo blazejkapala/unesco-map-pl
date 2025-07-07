@@ -1,11 +1,9 @@
 version: '3.8'
 
 services:
-  unesco-map:
+  backend:
     build: .
-    ports:
-      - "8033:8033"
-    container_name: unesco-heritage-map
+    container_name: unesco-backend
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
@@ -19,6 +17,33 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      - unesco-network
+    expose:
+      - "8033"
+
+  frontend:
+    build: ./unesco-map-react
+    container_name: unesco-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - unesco-network
+    expose:
+      - "80"
+
+  nginx:
+    image: nginx:alpine
+    container_name: unesco-nginx
+    restart: unless-stopped
+    ports:
+      - "8033:80"
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
     networks:
       - unesco-network
 
